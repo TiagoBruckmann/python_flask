@@ -1,10 +1,79 @@
 from flask_restful import Resource, reqparse
 from models.hotel_class import HotelModel
 from flask_jwt_extended import jwt_required
+import sqlite3
+
+def normalize_path_params( city = None, stars_min = 0, stars_max = 5, price_min = 0, price_max = 10000, limit = 50, offset = 0, **data):
+    if city:
+        return {
+            "stars_min": stars_min,
+            "stars_max": stars_max,
+            "price_min": price_min,
+            "price_max": price_max,
+            "city": city,
+            "limit": limit,
+            "offset": offset
+        }
+    return {
+        "stars_min": stars_min,
+        "stars_max": stars_max,
+        "price_min": price_min,
+        "price_max": price_max,
+        "limit": limit,
+        "offset": offset
+    }
+
+path_params = reqparse.RequestParser()
+path_params.add_argument("stars_min", type=float)
+path_params.add_argument("stars_max", type=float)
+path_params.add_argument("price_min", type=float)
+path_params.add_argument("price_max", type=float)
+path_params.add_argument("city", type=str)
+path_params.add_argument("limit", type=float)
+path_params.add_argument("offset", type=float)
 
 class Hoteis(Resource):
     def get(self):
-        return {'hoteis': [hotel.json() for hotel in HotelModel.query.all()]}
+
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+
+        data = path_params.parse_args()
+        valid_data = {key:data[key] for key in data if data[key] is not None}
+        params = normalize_path_params(**valid_data)
+
+        if not params.get("city"):
+            query = """
+                SELECT * FROM hoteis h
+                WHERE (h.stars >= ? AND h.stars <= ?)
+                AND (price >= ? AND price <= ?)
+                LIMIT ? OFFSET ?
+            """
+
+            tupla = tuple([params[key] for key in params])
+            result = cursor.execute(query, tupla)
+        else:
+            query = """
+                SELECT * FROM hoteis h
+                WHERE (h.stars >= ? AND h.stars <= ?)
+                AND (price >= ? AND price <= ?)
+                AND city = ? LIMIT ? OFFSET ?
+            """
+
+            tupla = tuple([params[key] for key in params])
+            result = cursor.execute(query, tupla)
+
+        hoteis = []
+        for line in result:
+            hoteis.append({
+                "id": line[0],
+                "name": line[1],
+                "stars": line[2],
+                "price": line[3],
+                "city": line[4]
+            })        
+
+        return {'hoteis': hoteis}
 
 class Hotel(Resource):
 

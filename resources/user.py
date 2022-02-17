@@ -1,8 +1,8 @@
 from flask_restful import Resource, reqparse
 from models.users import UserModel
-from flask_jwt_extended import create_access_token, jwt_required, get_raw_jwt
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 from werkzeug.security import safe_str_cmp
-
+from blacklist import BLACKLIST
 
 attributes = reqparse.RequestParser()
 attributes.add_argument('email', type=str, required=True, help="O campo email precisa ser preenchido")
@@ -64,6 +64,6 @@ class UserLogout(Resource):
     
     @jwt_required()
     def post(self):
-        jwt_id = get_raw_jwt()["jti"]
+        jwt_id = get_jwt()["jti"]
         BLACKLIST.add(jwt_id)
-        return {"message": "Usuário desconectou com sucesso!"}, 200
+        return {"message": "Usuário desconectado com sucesso!"}, 200
