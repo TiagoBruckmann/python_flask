@@ -6,7 +6,14 @@ from flask_jwt_extended import JWTManager
 from blacklist import BLACKLIST
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+# sqlite
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+# mysql
+pwdBd = "Pech1nch@"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:' + pwdBd + '@127.0.0.1/doccomvoce'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["JWT_SECRET_KEY"] = "userLoginTest"
 app.config["JWT_BLACKLIST_ENABLED"] = True
