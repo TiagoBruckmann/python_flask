@@ -4,13 +4,15 @@ class HotelModel(database.Model):
     __tablename__ = 'hoteis'
     
     id = database.Column(database.Integer, primary_key = True)
+    site_id = database.Column(database.Integer, database.ForeignKey('sites.id'))
     name = database.Column(database.String(40))
     stars = database.Column(database.Float(precision=1))
     price = database.Column(database.Float(precision=2))
     city = database.Column(database.String(40))
-
-    def __init__(self, id, name, stars, price, city):
+    
+    def __init__(self, id, site_id, name, stars, price, city):
         self.id = id
+        self.site_id = site_id
         self.name = name
         self.stars = stars
         self.price = price
@@ -19,6 +21,7 @@ class HotelModel(database.Model):
     def json(self):
         return {
             "id": self.id,
+            "site_id": self.site_id,
             "name": self.name,
             "stars": self.stars,
             "price": self.price,
