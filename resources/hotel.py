@@ -3,7 +3,7 @@ from models.hotel import HotelModel
 from models.site import SiteModel
 from resources.filters import normalize_path_params, city_exists, city_not_exists
 from flask_jwt_extended import jwt_required
-import sqlite3
+import mysql.connector
 
 path_params = reqparse.RequestParser()
 path_params.add_argument("stars_min", type=float)
@@ -17,7 +17,7 @@ path_params.add_argument("offset", type=float)
 class Hoteis(Resource):
     def get(self):
 
-        connection = sqlite3.connect('database.db')
+        connection = mysql.connector().connect(user="root", password="Pech1nch@", host="localhost", database="doccomvoce")
         cursor = connection.cursor()
 
         data = path_params.parse_args()
@@ -27,23 +27,28 @@ class Hoteis(Resource):
         if not params.get("city"):
 
             tupla = tuple([params[key] for key in params])
-            result = cursor.execute(city_not_exists, tupla)
+            cursor.execute(city_not_exists, tupla)
+            result = cursor.fetchall()
 
         else:
 
             tupla = tuple([params[key] for key in params])
-            result = cursor.execute(city_exists, tupla)
+            cursor.execute(city_exists, tupla)
+            result = cursor.fetchall()
 
         hoteis = []
-        for line in result:
-            hoteis.append({
-                "id": line[0],
-                "site_id": line[1],
-                "name": line[2],
-                "stars": line[3],
-                "price": line[4],
-                "city": line[5]
-            })        
+
+        if result:
+
+            for line in result:
+                hoteis.append({
+                    "id": line[0],
+                    "site_id": line[1],
+                    "name": line[2],
+                    "stars": line[3],
+                    "price": line[4],
+                    "city": line[5]
+                })        
 
         return {'hoteis': hoteis}
 

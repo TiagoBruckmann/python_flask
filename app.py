@@ -8,8 +8,9 @@ from blacklist import BLACKLIST
 
 app = Flask(__name__)
 
-# sqlite
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+# mysql
+pwdBd = "teste1234"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://TiagoBruckmann:' + pwdBd + '@TiagoBruckmann.mysql.pythonanywhere-services.com/doccomvoce'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["JWT_SECRET_KEY"] = "userLoginTest"

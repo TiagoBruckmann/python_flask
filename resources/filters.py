@@ -20,14 +20,14 @@ def normalize_path_params( city = None, stars_min = 0, stars_max = 5, price_min 
 
 city_not_exists = """
     SELECT * FROM hoteis h
-    WHERE (h.stars >= ? AND h.stars <= ?)
-    AND (price >= ? AND price <= ?)
-    LIMIT ? OFFSET ?
+    WHERE (h.stars >= %s AND h.stars <= %s)
+    AND (price >= %s AND price <= %s)
+    LIMIT %s OFFSET %s
 """
 
 city_exists = """
     SELECT * FROM hoteis h
-    WHERE (h.stars >= ? AND h.stars <= ?)
-    AND (price >= ? AND price <= ?)
-    AND city = ? LIMIT ? OFFSET ?
+    WHERE (h.stars >= %s AND h.stars <= %s)
+    AND (price >= %s AND price <= %s)
+    AND city = %s LIMIT %s OFFSET %s
 """
