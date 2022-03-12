@@ -4,10 +4,11 @@ Projeto de aprendizado de python com Flask para construções de micro serviços
 instalações necessarias:
 
 ```
-pip install Flask
-pip install Flask-RESTful
-pip install Flask-SQLAlchemy
-pip install Flask-JWT-Extended
 pip install mysql-connector-python
+pip install Flask-JWT-Extended
+pip install Flask-SQLAlchemy
+pip install Flask-RESTful
 pip install mysqlclient
+pip install requests
+pip install Flask
 ```
